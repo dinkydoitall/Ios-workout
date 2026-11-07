@@ -668,7 +668,7 @@ function confetti(){
     if(Date.now()-t0<3400)requestAnimationFrame(f);else cv.remove()})();
 }
 function celebrate(){confetti();banner("Workout complete","Day "+(S.day+1)+" "+DAYS[S.day].t+". Nice work. +"+(+S.set.ptsWo||0)+" pts");vib([100,60,100,60,200])}
-var D={acc:"#22c55e",red:"#ef4444",bg:"#0a0a0a",ink:"#f2f2f2",glass:7,blur:14,glow:100,bgdim:35,bgimg:"",pattern:true,rest:true,fx:true,vib:true,autoUp:false,aiInc:"5",unit:"lb",start:0,icon:"gym",gender:"m",title:"Dinky Lifter",pat:[0,1,2,3,4,-1,-1],range:"month",ws:0,platesLb:"45, 35, 25, 10, 5, 2.5",platesKg:"25, 20, 15, 10, 5, 2.5, 1.25",barsLb:"45, 35, 25",barsKg:"20, 15, 10",emSet:"😊",emFail:"😢",emFlexSide:"💪",emFlexMid:"",welcome:true,quoteMood:"mix",quotes:"",quotesOnly:false,armStyle:"emoji",skin:"#f1c27d",restOv:"",ptsEx:5,ptsWo:25,chime:true,chimeSound:"bell",chimeVol:70,chimeRepeat:2,chimeFreq:880,chimeLen:400,glassOn:false,glassTint:"#ffffff",glassSheen:"#ffffff",glassEdge:"#ffffff",sheen:100,edge:100,emConf:"🏆💪🔥"};
+var D={acc:"#22c55e",red:"#ef4444",bg:"#0a0a0a",ink:"#f2f2f2",glass:7,blur:14,glow:100,bgdim:35,bgimg:"",pattern:true,rest:true,fx:true,vib:true,splash:true,autoUp:false,aiInc:"5",unit:"lb",start:0,icon:"gym",gender:"m",title:"Dinky Lifter",pat:[0,1,2,3,4,-1,-1],range:"month",ws:0,platesLb:"45, 35, 25, 10, 5, 2.5",platesKg:"25, 20, 15, 10, 5, 2.5, 1.25",barsLb:"45, 35, 25",barsKg:"20, 15, 10",emSet:"😊",emFail:"😢",emFlexSide:"💪",emFlexMid:"",welcome:true,quoteMood:"mix",quotes:"",quotesOnly:false,armStyle:"emoji",skin:"#f1c27d",restOv:"",ptsEx:5,ptsWo:25,chime:true,chimeSound:"bell",chimeVol:70,chimeRepeat:2,chimeFreq:880,chimeLen:400,glassOn:false,glassTint:"#ffffff",glassSheen:"#ffffff",glassEdge:"#ffffff",sheen:100,edge:100,emConf:"🏆💪🔥"};
 var PRE={"Green, red & black":{},"Ice blue":{acc:"#38bdf8",red:"#f472b6",bg:"#06101a"},"Fire":{acc:"#f97316",red:"#ef4444",bg:"#0c0a09"},"Purple":{acc:"#a78bfa",red:"#f43f5e",bg:"#0d0a14"},"Light":{acc:"#0f6b5c",red:"#b4491f",bg:"#f3f1ec",ink:"#1d2321",glass:6}};
 S.set=Object.assign({},D,S.set||{});
 if(S.set.title==="Workout Tracker")S.set.title="Dinky Lifter";if(S.awv!==3){S.set.ptsEx=Math.min(+S.set.ptsEx||5,5);S.set.ptsWo=Math.min(+S.set.ptsWo||25,25);S.awv=3;S.aw=null}
@@ -718,7 +718,7 @@ function drawSettings(){
   [["glassTint","Glass tint"],["glassSheen","Shine color"],["glassEdge","Edge color"]].forEach(function(r){h+='<div class="sr2"><label for="s_'+r[0]+'">'+r[1]+'</label><input type="color" id="s_'+r[0]+'" data-s="'+r[0]+'" value="'+s[r[0]]+'"></div>'});
   [["sheen","Shine strength",0,200,5],["edge","Edge brightness",0,200,5]].forEach(function(r){h+='<div class="sr2"><label for="s_'+r[0]+'">'+r[1]+'</label><input type="range" id="s_'+r[0]+'" data-s="'+r[0]+'" min="'+r[2]+'" max="'+r[3]+'" step="'+r[4]+'" value="'+(s[r[0]]==null?100:s[r[0]])+'"></div>'});
   h+='<p class="sl">Options</p>';
-  [["pattern","Background texture"],["rest","Auto-start rest timer after each set"],["fx","Celebration effects"],["vib","Vibration"],["autoUp","Auto-increase next weight when an exercise is finished with no failed sets"]].forEach(function(r){h+='<div class="sr2"><label for="s_'+r[0]+'">'+r[1]+'</label><input type="checkbox" id="s_'+r[0]+'" data-s="'+r[0]+'"'+(s[r[0]]?' checked':'')+'></div>'});
+  [["pattern","Background texture"],["rest","Auto-start rest timer after each set"],["fx","Celebration effects"],["vib","Vibration"],["splash","Opening animation"],["autoUp","Auto-increase next weight when an exercise is finished with no failed sets"]].forEach(function(r){h+='<div class="sr2"><label for="s_'+r[0]+'">'+r[1]+'</label><input type="checkbox" id="s_'+r[0]+'" data-s="'+r[0]+'"'+(s[r[0]]?' checked':'')+'></div>'});
   h+='<div class="sr2"><label for="s_aiInc">Auto-increase amount (in your units)</label><select id="s_aiInc" data-s="aiInc">'+["1","2.5","5","10"].map(function(o){return'<option value="'+o+'"'+(String(s.aiInc||"5")===o?' selected':'')+'>+'+o+'</option>'}).join("")+'</select></div>';
   h+='<div class="sr2"><label for="s_unit">Default units</label><select id="s_unit" data-s="unit"><option value="lb"'+(s.unit==="lb"?' selected':'')+'>lb</option><option value="kg"'+(s.unit==="kg"?' selected':'')+'>kg</option></select></div>';
   h+='<div class="sr2"><label for="s_gender">Flexing figure</label><select id="s_gender" data-s="gender"><option value="m"'+(s.gender!=="f"?' selected':'')+'>Male</option><option value="f"'+(s.gender==="f"?' selected':'')+'>Female</option></select></div>';
@@ -801,6 +801,25 @@ var BGP=[
  ["Stone",'<defs><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".012 .02" numOctaves="4" seed="7"/><feColorMatrix values="0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .55  0 0 0 .9 0"/></filter></defs><rect width="800" height="1400" fill="#15161a"/><rect width="800" height="1400" filter="url(#n)" opacity=".55"/>']
 ];
 function bgURI(i){if(i===0)return skyURI();return"data:image/svg+xml;utf8,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1400" preserveAspectRatio="xMidYMid slice">'+BGP[i][1]+'</svg>')}
+function dinkySVG(rep){
+  var D='dur="1.6s" repeatCount="'+(rep||"indefinite")+'" calcMode="spline" keyTimes="0;.5;1" keySplines=".45 0 .2 1;.45 0 .2 1"',F='fill="#c4f535"',K='#141b34';
+  return'<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="1024" height="1024" rx="230" fill="#141b34"/>'+
+  '<ellipse cx="512" cy="885" rx="195" ry="28" fill="#0e1224"/>'+
+  '<g><animateTransform attributeName="transform" type="translate" values="0 0;0 16;0 0" '+D+'/>'+
+  '<ellipse cx="418" cy="868" rx="48" ry="25" '+F+'/><ellipse cx="606" cy="868" rx="48" ry="25" '+F+'/><rect x="400" y="800" width="42" height="70" '+F+'/><rect x="582" y="800" width="42" height="70" '+F+'/>'+
+  '<ellipse cx="512" cy="665" rx="172" ry="190" '+F+'/>'+
+  '<g stroke="'+K+'" stroke-width="14" stroke-linecap="round"><path d="M420 582L492 606M604 582L532 606"/></g><circle cx="462" cy="648" r="21" fill="'+K+'"/><circle cx="562" cy="648" r="21" fill="'+K+'"/><circle cx="422" cy="692" r="26" fill="#8fb414"/><circle cx="602" cy="692" r="26" fill="#8fb414"/><path d="M470 696Q512 732 556 696Z" fill="'+K+'"/></g>'+
+  '<g fill="none" stroke="#c4f535" stroke-width="54" stroke-linecap="round" stroke-linejoin="round"><path d="M395 625L272 515L332 335"><animate attributeName="d" values="M395 625L272 515L332 335;M395 640L252 650L332 545;M395 625L272 515L332 335" '+D+'/></path><path d="M629 625L752 515L692 335"><animate attributeName="d" values="M629 625L752 515L692 335;M629 640L772 650L692 545;M629 625L752 515L692 335" '+D+'/></path></g>'+
+  '<g><animateTransform attributeName="transform" type="translate" values="0 0;0 210;0 0" '+D+'/><path d="M240 335Q512 305 790 335" fill="none" stroke="#fff" stroke-width="30" stroke-linecap="round"/><rect x="95" y="155" width="100" height="390" rx="34" fill="#fff"/><rect x="198" y="205" width="52" height="290" rx="16" fill="#fff"/><rect x="829" y="155" width="100" height="390" rx="34" fill="#fff"/><rect x="774" y="205" width="52" height="290" rx="16" fill="#fff"/><rect x="116" y="190" width="18" height="190" rx="9" fill="#dcdce2"/><rect x="890" y="190" width="18" height="190" rx="9" fill="#dcdce2"/><circle cx="332" cy="335" r="38" '+F+'/><circle cx="692" cy="335" r="38" '+F+'/></g>'+
+  '<g stroke="#c4f535" stroke-width="14" stroke-linecap="round"><animate attributeName="opacity" values="1;0;1" '+D+'/><path d="M436 400L456 440M512 385L512 436M588 400L568 440"/></g>'+
+  '<path d="M652 470C640 492 628 506 628 522a24 24 0 0 0 48 0C676 506 664 492 652 470Z" fill="#bfe3ff"><animate attributeName="opacity" values="0;0;1;1;0" dur="3.2s" repeatCount="indefinite"/></path></svg>'}
+function splash(){
+  if(RM||!S.set.fx||S.set.splash===false)return;
+  var o=document.createElement("div");o.id="splash";o.style.cssText="position:fixed;left:0;top:0;right:0;bottom:0;z-index:90;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:"+S.set.bg+";color:"+S.set.ink+";opacity:1;transition:opacity .55s ease;cursor:pointer";
+  o.innerHTML='<div style="width:min(250px,60vw);filter:drop-shadow(0 14px 30px rgba(0,0,0,.5))">'+dinkySVG(2)+'</div><div style="font:800 26px/1 inherit;letter-spacing:.5px;opacity:0;transition:opacity .6s ease .4s" id="spt">'+esc(S.set.title||"Dinky Lifter")+'</div>';
+  document.body.appendChild(o);setTimeout(function(){var t=$("spt");if(t)t.style.opacity=1},30);
+  function gone(){o.style.opacity=0;setTimeout(function(){o.remove()},600)}
+  o.onclick=gone;setTimeout(gone,3000)}
 function bgLoad(file){
   var u=URL.createObjectURL(file),im=new Image();
   im.onload=function(){var m=Math.max(im.width,im.height),sc=Math.min(1,1280/m),cv=document.createElement("canvas");cv.width=Math.round(im.width*sc);cv.height=Math.round(im.height*sc);cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);URL.revokeObjectURL(u);
@@ -1561,7 +1580,7 @@ function drawWelcome(){
   gr=hr<12?"Good morning":hr<18?"Good afternoon":"Good evening",ic=hr<12?"\u2600\uFE0F":hr<18?"\u{1F324}\uFE0F":"\u{1F319}",
   tx=typeof v==="number"&&DAYS[v]?"Today: Day "+(v+1)+" "+esc(DAYS[v].t)+"<small>"+esc(DAYS[v].s||"")+"</small>":v==="r"?"Today is a rest day<small>Recover well and come back strong.</small>":"No workout scheduled yet<small>Pick one from the calendar and get moving.</small>",
   dt="";try{dt=now.toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"})}catch(e){dt=lbl(k)}
-  $("wlc").innerHTML='<img class="wlic" alt="" src="'+document.querySelector(".appic").src+'"><div class="wlg">'+gr+' '+ic+'</div><div class="wlt" id="wlt">'+esc(S.set.title||"Dinky Lifter")+'</div><div class="wld">'+esc(dt)+'</div>'+
+  $("wlc").innerHTML=(RM?'<img class="wlic" alt="" src="'+document.querySelector(".appic").src+'">':'<div class="wlic">'+dinkySVG()+'</div>')+'<div class="wlg">'+gr+' '+ic+'</div><div class="wlt" id="wlt">'+esc(S.set.title||"Dinky Lifter")+'</div><div class="wld">'+esc(dt)+'</div>'+
     '<div class="wlql">'+(FN.indexOf(dq)>=0?'Daily laugh \u{1F604}':'Quote of the day')+'</div><div class="wlq">\u201C'+esc(dq)+'\u201D</div>'+
     '<div class="wlr">'+tx+'</div><div class="mnote">'+L[2]+' '+L[1]+' level, '+a.pts+' pts</div><button class="wlb" id="wlgo">Let\u2019s go</button>';
   $("wl").classList.add("open");try{$("wlgo").focus()}catch(e){}
@@ -1681,6 +1700,7 @@ var tv=S.sched[dk(new Date())];if(typeof tv==="number")S.day=tv;
 if(!S.pl){S.pl={};var pk0=[];rawLive(pk0);pk0.forEach(function(k){S.pl[k]=1});save()}
 applyTheme();applyBurger();fixDay();tabs();render();drawCal();drawWater();drawCalc();awCheck(0);drawMb();drawNotes();applyMenuOrder();drawCC();applyHome();
 if(S.set.welcome!==false)drawWelcome();
+splash();
 try{if(window.claude&&claude.use)claude.use("downloads").then(function(d){DL=d;drawHist()}).catch(function(){})}catch(e){}
 </script>
 </body>
