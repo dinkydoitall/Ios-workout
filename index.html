@@ -2,9 +2,6 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0a0a0a">
-
 <title>Dinky Lifter</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -147,6 +144,8 @@ details input,input.wt,.sr .wt,.cx,#cb,.wb select{background:rgba(0,0,0,.35);bor
 .wpbox .cx,.swpanel>.cx{width:100%;margin-top:6px}
 .wpbox .w .cx,.swpanel .w .cx{width:auto}
 .wpbox .w{flex-wrap:wrap}
+.bgg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.bgt{height:74px;border:1px solid rgba(255,255,255,.25);border-radius:10px;background-size:cover;background-position:center;color:#fff;font:700 11px/1 inherit;display:flex;align-items:flex-end;justify-content:center;padding:0 0 6px;cursor:pointer;text-shadow:0 1px 3px #000}
+.bgup{position:relative;overflow:hidden;display:inline-flex;align-items:center;cursor:pointer}.bgup input{position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0}
 .hint{color:var(--mute);font-size:12px;margin-top:6px}
 .sr2 input[type=text]{width:55%;height:38px;border:1px solid var(--line);border-radius:8px;background:rgba(0,0,0,.3);color:var(--ink);font:16px inherit;padding:0 8px}
 .set.fail{background:var(--red);border-color:var(--red);color:#fff}
@@ -367,6 +366,7 @@ h1[contenteditable]:focus::after{content:""}
 <details id="libwrap"><summary>Exercises</summary><div id="lib"></div></details>
 <details id="macwrap"><summary>Daily macros</summary><div id="mac"></div></details>
 <details id="watermenu"><summary>Water intake</summary><div class="wtr" id="waterwrap"></div></details>
+<details id="ideawrap"><summary>Submit an idea or request</summary><div id="idea"></div></details>
 <button class="drrow" id="drset" style="margin-top:0">Settings</button>
 </div></div>
 <div class="wl" id="wl" role="dialog" aria-modal="true" aria-labelledby="wlt"><div class="wlc" id="wlc"></div></div>
@@ -464,7 +464,7 @@ function goTimer(){var v=$("tin").value.trim(),sec=0;if(v.indexOf(":")>-1){var p
 $("tok").onclick=goTimer;
 $("tin").onkeydown=function(ev){if(ev.key==="Enter")goTimer()};
 ["start","target","date"].forEach(function(k){var el=$("m_"+k);el.value=S.m[k]||"";el.oninput=function(){S.m[k]=el.value;save();if(k==="start"&&typeof drawWater==="function")drawWater()}});
-S.sched=S.sched||{};S.done=S.done||{};S.wh=S.wh||{};S.rp=S.rp||{};S.rl=S.rl||{};S.ai=S.ai||{};S.sw=S.sw||{};S.ex=S.ex||{};S.exh=S.exh||{};S.xs=S.xs||{};S.fl=S.fl||{};S.ps=S.ps||{};S.lib=S.lib||[];S.awr=S.awr||{c:[],d:[]};S.mac=S.mac||{};S.notes=S.notes||{};S.cc=S.cc||[];S.hh=S.hh||[];S.mh=S.mh||[];S.mt=S.mt||{c:2500,p:180,b:250,f:70};S.wt=S.wt||{};S.ff=S.ff||[];if(Array.isArray(S.hm))S.hm=S.hm.filter(function(x){return x!=="waterwrap"});if(!S.wv2){S.wv2=1;if(Array.isArray(S.mo)&&S.mo.indexOf("watermenu")<0){var wi=S.mo.indexOf("drset");S.mo.splice(wi<0?S.mo.length:wi,0,"watermenu")}}
+S.sched=S.sched||{};S.done=S.done||{};S.wh=S.wh||{};S.rp=S.rp||{};S.rl=S.rl||{};S.ai=S.ai||{};S.sw=S.sw||{};S.ex=S.ex||{};S.exh=S.exh||{};S.xs=S.xs||{};S.fl=S.fl||{};S.ps=S.ps||{};S.lib=S.lib||[];S.awr=S.awr||{c:[],d:[]};S.mac=S.mac||{};S.notes=S.notes||{};S.cc=S.cc||[];S.hh=S.hh||[];S.mh=S.mh||[];S.mt=S.mt||{c:2500,p:180,b:250,f:70};S.wt=S.wt||{};S.ff=S.ff||[];if(!S.iv1){S.iv1=1;if(Array.isArray(S.mo)&&S.mo.indexOf("ideawrap")<0){var ii=S.mo.indexOf("drset");S.mo.splice(ii<0?S.mo.length:ii,0,"ideawrap")}}if(Array.isArray(S.hm))S.hm=S.hm.filter(function(x){return x!=="waterwrap"});if(!S.wv2){S.wv2=1;if(Array.isArray(S.mo)&&S.mo.indexOf("watermenu")<0){var wi=S.mo.indexOf("drset");S.mo.splice(wi<0?S.mo.length:wi,0,"watermenu")}}
 var MN=["January","February","March","April","May","June","July","August","September","October","November","December"],
     WD=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
     now=new Date(),cal={y:now.getFullYear(),m:now.getMonth(),sel:null};
@@ -600,7 +600,7 @@ function drawHist(){
       mp=cal.y+"-"+("0"+(cal.m+1)).slice(-2),mc=ks.filter(function(k){return k.indexOf(mp)===0}).length,h="";
   h+='<p>'+ks.length+' workouts completed in total, '+mc+' in '+MN[cal.m]+'.</p><div class="pk">';
   if(DL)h+='<button class="btn" data-x="csv">Export calendar (CSV)</button><button class="btn" data-x="json">Export backup</button>';
-  h+='<label class="btn">Import backup<input type="file" accept=".json,application/json" id="imp" hidden></label>'+((window.claude&&window.claude.use)?'':'<button class="btn" id="pasteimp" type="button">Paste backup</button>')+'</div>';
+  h+='<label class="btn">Import backup<input type="file" accept=".json,application/json" id="imp" hidden></label></div>';
   if(!DL)h+='<p>Exporting isn’t available in this view.</p>';
   if(HM)h+='<p>'+HM+'</p>';
   ks.slice(0,30).forEach(function(k){h+='<button class="hl" data-h="'+k+'">'+lbl(k)+'<span>Day '+(S.done[k]+1)+' '+DAYS[S.done[k]].t+'</span></button>'});
@@ -667,7 +667,7 @@ function confetti(){
     if(Date.now()-t0<3400)requestAnimationFrame(f);else cv.remove()})();
 }
 function celebrate(){confetti();banner("Workout complete","Day "+(S.day+1)+" "+DAYS[S.day].t+". Nice work. +"+(+S.set.ptsWo||0)+" pts");vib([100,60,100,60,200])}
-var D={acc:"#22c55e",red:"#ef4444",bg:"#0a0a0a",ink:"#f2f2f2",glass:7,blur:14,glow:100,pattern:true,rest:true,fx:true,vib:true,autoUp:false,aiInc:"5",unit:"lb",start:0,icon:"gym",gender:"m",title:"Dinky Lifter",pat:[0,1,2,3,4,-1,-1],range:"month",ws:0,platesLb:"45, 35, 25, 10, 5, 2.5",platesKg:"25, 20, 15, 10, 5, 2.5, 1.25",barsLb:"45, 35, 25",barsKg:"20, 15, 10",emSet:"😊",emFail:"😢",emFlexSide:"💪",emFlexMid:"",welcome:true,quoteMood:"mix",quotes:"",quotesOnly:false,armStyle:"emoji",skin:"#f1c27d",restOv:"",ptsEx:5,ptsWo:25,chime:true,chimeSound:"bell",chimeVol:70,chimeRepeat:2,chimeFreq:880,chimeLen:400,glassOn:false,glassTint:"#ffffff",glassSheen:"#ffffff",glassEdge:"#ffffff",sheen:100,edge:100,emConf:"🏆💪🔥"};
+var D={acc:"#22c55e",red:"#ef4444",bg:"#0a0a0a",ink:"#f2f2f2",glass:7,blur:14,glow:100,bgdim:35,bgimg:"",pattern:true,rest:true,fx:true,vib:true,autoUp:false,aiInc:"5",unit:"lb",start:0,icon:"gym",gender:"m",title:"Dinky Lifter",pat:[0,1,2,3,4,-1,-1],range:"month",ws:0,platesLb:"45, 35, 25, 10, 5, 2.5",platesKg:"25, 20, 15, 10, 5, 2.5, 1.25",barsLb:"45, 35, 25",barsKg:"20, 15, 10",emSet:"😊",emFail:"😢",emFlexSide:"💪",emFlexMid:"",welcome:true,quoteMood:"mix",quotes:"",quotesOnly:false,armStyle:"emoji",skin:"#f1c27d",restOv:"",ptsEx:5,ptsWo:25,chime:true,chimeSound:"bell",chimeVol:70,chimeRepeat:2,chimeFreq:880,chimeLen:400,glassOn:false,glassTint:"#ffffff",glassSheen:"#ffffff",glassEdge:"#ffffff",sheen:100,edge:100,emConf:"🏆💪🔥"};
 var PRE={"Green, red & black":{},"Ice blue":{acc:"#38bdf8",red:"#f472b6",bg:"#06101a"},"Fire":{acc:"#f97316",red:"#ef4444",bg:"#0c0a09"},"Purple":{acc:"#a78bfa",red:"#f43f5e",bg:"#0d0a14"},"Light":{acc:"#0f6b5c",red:"#b4491f",bg:"#f3f1ec",ink:"#1d2321",glass:6}};
 S.set=Object.assign({},D,S.set||{});
 if(S.set.title==="Workout Tracker")S.set.title="Dinky Lifter";if(S.awv!==3){S.set.ptsEx=Math.min(+S.set.ptsEx||5,5);S.set.ptsWo=Math.min(+S.set.ptsWo||25,25);S.awv=3;S.aw=null}
@@ -686,7 +686,8 @@ function applyTheme(){
   function gs(n){var sa=Math.min(.7,(light?.5:.16)*sm);return"background:radial-gradient(130% 90% at 0% 0%,rgba("+SH+","+(sa*1.4)+") 0%,rgba("+SH+",0) 55%),linear-gradient(112deg,rgba("+SH+",0) 0 36%,rgba("+SH+","+(sa*.9)+") 41%,rgba("+SH+","+(sa*.25)+") 47%,rgba("+SH+",0) 52% 100%),linear-gradient(0deg,rgba("+SH+","+(sa*.7)+") 0%,rgba("+SH+",0) 16%),linear-gradient(135deg,rgba("+SH+","+sa+") 0%,rgba("+SH+","+(.03*sm)+") 40%,rgba("+SH+","+(.015*sm)+") 60%,rgba("+SH+","+(sa*.6)+") 100%),rgba("+GT+","+g+");border-color:rgba("+ED+","+Math.min(1,(light?.7:.28)*em)+");-webkit-backdrop-filter:blur("+n+"px) saturate(180%);backdrop-filter:blur("+n+"px) saturate(180%)"}
   var c=":root{--bg:"+s.bg+";--ink:"+s.ink+";--mute:rgb("+mix(ik,b,.62).join(",")+");--line:rgba("+LN+",.16);--acc:"+s.acc+";--onacc:"+on+";--accsoft:rgba("+A+",.2);--red:"+s.red+";--redsoft:rgba("+R+",.2);--warn:"+s.red+";--card:rgba("+GT+","+g+");color-scheme:"+(light?"light":"dark")+"}";
   c+="html{background:"+s.bg+"}";
-  c+="body::before{background:radial-gradient(60% 45% at 8% 0%,rgba("+A+","+(.3*gl)+"),transparent 70%),radial-gradient(55% 40% at 100% 100%,rgba("+R+","+(.26*gl)+"),transparent 70%),radial-gradient(40% 30% at 92% 14%,rgba("+A+","+(.1*gl)+"),transparent 70%),"+(s.pattern?"repeating-linear-gradient(135deg,rgba("+t+",.028) 0 2px,transparent 2px 14px),":"")+"linear-gradient(180deg,rgb("+B+"),rgb("+dk+"))}";
+  var bim=s.bgimg?"linear-gradient(rgba("+B+","+(s.bgdim/100)+"),rgba("+B+","+(s.bgdim/100)+")),url("+JSON.stringify(s.bgimg==="sky:auto"?skyURI():s.bgimg)+") center/cover no-repeat,":"";
+  c+="body::before{background:"+bim+"radial-gradient(60% 45% at 8% 0%,rgba("+A+","+(.3*gl)+"),transparent 70%),radial-gradient(55% 40% at 100% 100%,rgba("+R+","+(.26*gl)+"),transparent 70%),radial-gradient(40% 30% at 92% 14%,rgba("+A+","+(.1*gl)+"),transparent 70%),"+(s.pattern?"repeating-linear-gradient(135deg,rgba("+t+",.028) 0 2px,transparent 2px 14px),":"")+"linear-gradient(180deg,rgb("+B+"),rgb("+dk+"))}";
   c+=".ex,details,.drrow,.wpbox,.info,.wlc,.sg{"+gs(Math.round(bl*1.5+4))+";box-shadow:0 10px 32px rgba(0,0,0,"+(light?.12:.35)+"),inset 0 1px 0 rgba("+ED+","+Math.min(1,(light?.8:.35)*em)+"),inset 0 -1px 0 rgba("+ED+","+(.16*em)+"),inset 1px 0 0 rgba("+ED+","+(.18*em)+"),inset 0 -10px 22px rgba(0,0,0,"+(light?.04:.16)+"),inset 0 0 26px rgba("+SH+","+(.07*sm)+")}";
   c+=".btn,.tab,.hl,.nav,.swp,.set,.fbtn{"+gs(Math.min(bl,10))+";box-shadow:inset 0 1px 0 rgba("+ED+","+Math.min(1,.4*em)+"),inset 0 -1px 0 rgba("+ED+","+(.1*em)+"),0 2px 8px rgba(0,0,0,.22)}";
   c+=".cd{background:linear-gradient(135deg,rgba("+SH+","+(.1*sm)+"),rgba("+SH+","+(.02*sm)+")),rgba("+GT+","+(g*.6)+");border-color:rgba("+ED+","+(.16*em)+")}";
@@ -697,8 +698,8 @@ function applyTheme(){
   c+="@keyframes rdy{0%,100%{box-shadow:0 0 0 0 rgba("+R+",.6)}50%{box-shadow:0 0 0 8px rgba("+R+",0)}}";
   if(!s.fx)c+=".ex.pop,.cmp.ready{animation:none}";
   var hh=document.querySelector("h1");if(hh)hh.textContent=s.title||"Dinky Lifter";document.title=s.title||"Dinky Lifter";
-  var el=$("theme");if(!el){el=document.createElement("style");el.id="theme";document.head.appendChild(el)}
-  el.textContent=c;
+  var el=$("theme");if(!el){el=document.createElement("style");el.id="theme"}
+  el.textContent=c;if(el.parentNode!==document.body||el.nextElementSibling)document.body.appendChild(el);
 }
 function drawSettings(){
   var s=S.set,h='<div class="sh"><b>Settings</b><button class="btn" id="sx">Done</button></div>';
@@ -707,6 +708,10 @@ function drawSettings(){
   [["acc","Main color"],["red","Accent color"],["bg","Background"],["ink","Text"]].forEach(function(r){h+='<div class="sr2"><label for="s_'+r[0]+'">'+r[1]+'</label><input type="color" id="s_'+r[0]+'" data-s="'+r[0]+'" value="'+s[r[0]]+'"></div>'});
   h+='<p class="sl">Glass and background</p>';
   [["glass","Box tint strength",0,30,1],["blur","Box blur",0,30,1],["glow","Background glow",0,150,5]].forEach(function(r){h+='<div class="sr2"><label for="s_'+r[0]+'">'+r[1]+'</label><input type="range" id="s_'+r[0]+'" data-s="'+r[0]+'" min="'+r[2]+'" max="'+r[3]+'" step="'+r[4]+'" value="'+s[r[0]]+'"></div>'});
+  h+='<div class="sr2"><label>Background image</label><span><label class="btn bgup" id="bgpick">'+(s.bgimg?'Change':'Upload')+'<input type="file" id="s_bgfile" accept="image/*"></label>'+(s.bgimg?' <button class="btn" id="bgclear">Remove</button>':'')+'</span></div>';
+  h+='<div class="hint" style="margin:8px 0 4px">Or pick a built-in background:</div><div class="bgg">'+BGP.map(function(b,i){return'<button class="bgt" data-bgp="'+i+'" aria-label="'+b[0]+' background" style="background-image:url(\''+bgURI(i)+'\')"><span>'+b[0]+'</span></button>'}).join("")+'</div>';
+  h+='<div class="hint">Only the photo you pick is used. It stays on this device.</div>';
+  if(s.bgimg)h+='<div class="sr2"><label for="s_bgdim">Image dimming</label><input type="range" id="s_bgdim" data-s="bgdim" min="0" max="90" step="5" value="'+(s.bgdim==null?35:s.bgdim)+'"></div>';
   h+='<p class="sl">Frosted glass colors</p><div class="pk">'+["Default","Green glass","Red glass","Ice glass","Smoke"].map(function(n,i){return'<button class="btn" data-gp="'+i+'">'+n+'</button>'}).join("")+'</div>';
   h+='<div class="sr2"><label for="s_glassOn">Use custom glass colors</label><input type="checkbox" id="s_glassOn" data-s="glassOn"'+(s.glassOn?' checked':'')+'></div>';
   [["glassTint","Glass tint"],["glassSheen","Shine color"],["glassEdge","Edge color"]].forEach(function(r){h+='<div class="sr2"><label for="s_'+r[0]+'">'+r[1]+'</label><input type="color" id="s_'+r[0]+'" data-s="'+r[0]+'" value="'+s[r[0]]+'"></div>'});
@@ -755,6 +760,8 @@ $("sp").onclick=function(ev){
   var id=ev.target.id;
   if(id==="sp"||id==="sx"){$("sp").classList.remove("open");return}
   if(id==="swel"){drawWelcome();return}
+  var bgq=ev.target.closest("[data-bgp]");if(bgq){S.set.bgimg=+bgq.dataset.bgp===0?"sky:auto":bgURI(+bgq.dataset.bgp);if(S.set.bgdim==null)S.set.bgdim=35;save();applyTheme();drawSettings();return}
+  if(id==="bgclear"){S.set.bgimg="";save();applyTheme();drawSettings();return}
   if(id==="schime"){chime();return}
   var gq=ev.target.closest("[data-gp]");if(gq){var gv=GP[+gq.dataset.gp];if(gv){S.set.glassOn=true;S.set.glassTint=gv[0];S.set.glassSheen=gv[1];S.set.glassEdge=gv[2]}else S.set.glassOn=false;save();applyTheme();drawSettings();return}
   var em=ev.target.closest("[data-em]");if(em){var ek=em.dataset.em;S.set[ek]=em.dataset.e;var ei=$("s_"+ek);if(ei)ei.value=em.dataset.e;save();return}
@@ -765,8 +772,38 @@ $("sp").onclick=function(ev){
   if(id==="sbp"){delete S.set.bp;save();applyBurger();return}
   if(id==="srst"){S.set=Object.assign({},D,{pat:D.pat.slice()});save();applyTheme();applyBurger();drawSettings();drawCal();drawCalc()}
 };
+var SKYK=[[0,[5,10,31],[14,27,61]],[5,[15,21,53],[59,42,94]],[6.5,[58,74,140],[255,154,107]],[8,[74,144,217],[168,216,255]],[12,[47,127,214],[159,212,255]],[16.5,[74,127,192],[255,197,138]],[18.5,[43,16,85],[255,122,80]],[20,[26,16,64],[74,42,106]],[22,[7,16,42],[16,28,64]],[24,[5,10,31],[14,27,61]]];
+function skyH(){var d=new Date();return d.getHours()+d.getMinutes()/60}
+function skyMix(h){var i=0;while(i<SKYK.length-2&&h>=SKYK[i+1][0])i++;var a=SKYK[i],b=SKYK[i+1],f=(h-a[0])/(b[0]-a[0]);var m=function(x,y){return x.map(function(v,j){return Math.round(v+(y[j]-v)*f)})};return[m(a[1],b[1]),m(a[2],b[2])]}
+function skySVG(h){
+  var c=skyMix(h),top="rgb("+c[0]+")",bot="rgb("+c[1]+")",o='<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+top+'"/><stop offset=".8" stop-color="'+bot+'"/></linearGradient><radialGradient id="sg"><stop offset="0" stop-color="#fff6c8"/><stop offset=".35" stop-color="#ffd27a" stop-opacity=".55"/><stop offset="1" stop-color="#ffb347" stop-opacity="0"/></radialGradient><radialGradient id="mg"><stop offset="0" stop-color="#e8ecff" stop-opacity=".55"/><stop offset="1" stop-color="#9fb0ff" stop-opacity="0"/></radialGradient></defs><rect width="800" height="1400" fill="url(#g)"/>',i,r;
+  var dark=h<5.5||h>20?1:(h<7?(7-h)/1.5:(h>19?(h-19):0));dark=Math.max(0,Math.min(1,dark));
+  if(dark>0){for(i=0;i<60;i++){r=Math.sin(i*91.7)*43758.5453;var x=(r-Math.floor(r))*800;r=Math.sin(i*12.9898+7)*43758.5453;var y=(r-Math.floor(r))*900;o+='<circle cx="'+x.toFixed(0)+'" cy="'+y.toFixed(0)+'" r="'+(1+(i%3)*.8)+'" fill="#fff" fill-opacity="'+(dark*(.35+(i%4)*.15)).toFixed(2)+'"/>'}}
+  if(h>=5.5&&h<=19.2){var u=(h-5.5)/13.7,sx=90+620*u,sy=1060-Math.sin(Math.PI*u)*700;o+='<circle cx="'+sx.toFixed(0)+'" cy="'+sy.toFixed(0)+'" r="260" fill="url(#sg)"/><circle cx="'+sx.toFixed(0)+'" cy="'+sy.toFixed(0)+'" r="62" fill="#fff3c2"/>'}
+  var mh=(h+24-17.5)%24;if(mh<=12.5){var v=mh/12.5,mx=90+620*v,my=1060-Math.sin(Math.PI*v)*700,ma=Math.min(1,Math.min(v,1-v)*8+.15);o+='<g opacity="'+ma.toFixed(2)+'"><circle cx="'+mx.toFixed(0)+'" cy="'+my.toFixed(0)+'" r="210" fill="url(#mg)"/><circle cx="'+mx.toFixed(0)+'" cy="'+my.toFixed(0)+'" r="58" fill="#eef1ff"/><circle cx="'+(mx-18).toFixed(0)+'" cy="'+(my-12).toFixed(0)+'" r="11" fill="#c9cfe8"/><circle cx="'+(mx+16).toFixed(0)+'" cy="'+(my+18).toFixed(0)+'" r="8" fill="#c9cfe8"/><circle cx="'+(mx+10).toFixed(0)+'" cy="'+(my-24).toFixed(0)+'" r="6" fill="#c9cfe8"/></g>'}
+  var hill="rgb("+c[1].map(function(x,j){return Math.round(x*.22)}).join(",")+")";
+  return o+'<path d="M0 1130 L150 1010 L300 1100 L480 980 L650 1090 L800 1020 L800 1400 L0 1400Z" fill="'+hill+'"/>'}
+function skyURI(){return"data:image/svg+xml;utf8,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1400" preserveAspectRatio="xMidYMid slice">'+skySVG(skyH())+'</svg>')}
+var BGP=[
+ ["Sun & Moon",null],
+ ["Sunset",'<linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b1055"/><stop offset=".5" stop-color="#d4418e"/><stop offset=".78" stop-color="#ff9a44"/></linearGradient><rect width="800" height="1400" fill="url(#g)"/><circle cx="400" cy="880" r="170" fill="#ffd27a"/><path d="M0 1050 L170 900 L320 1030 L520 850 L800 1060 L800 1400 L0 1400Z" fill="#1a0b2e"/>'],
+ ["Ocean",'<linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#021b3a"/><stop offset="1" stop-color="#0a7ea4"/></linearGradient><rect width="800" height="1400" fill="url(#g)"/><g fill="none" stroke="#7fd8ff" stroke-opacity=".25" stroke-width="3"><path d="M0 300 Q200 240 400 300 T800 300"/><path d="M0 480 Q200 420 400 480 T800 480"/><path d="M0 660 Q200 600 400 660 T800 660"/><path d="M0 840 Q200 780 400 840 T800 840"/><path d="M0 1020 Q200 960 400 1020 T800 1020"/></g>'],
+ ["Forest",'<linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b1f14"/><stop offset="1" stop-color="#1f6b3a"/></linearGradient><rect width="800" height="1400" fill="url(#g)"/><g fill="#0a1a10" fill-opacity=".8"><path d="M100 1400 L100 1000 L20 1000 L140 760 L60 760 L170 520 L280 760 L200 760 L320 1000 L240 1000 L240 1400Z"/><path d="M520 1400 L520 1100 L450 1100 L560 880 L490 880 L600 660 L710 880 L640 880 L750 1100 L680 1100 L680 1400Z"/></g>'],
+ ["Neon grid",'<rect width="800" height="1400" fill="#0b0716"/><g stroke="#ff2bd6" stroke-opacity=".55" stroke-width="2"><path d="M0 800H800M0 880H800M0 980H800M0 1110H800M0 1280H800"/><path d="M400 700L-600 1400M400 700L-200 1400M400 700L200 1400M400 700L400 1400M400 700L600 1400M400 700L1000 1400M400 700L1400 1400"/></g><circle cx="400" cy="560" r="150" fill="#ff7a18" fill-opacity=".85"/><rect y="520" width="800" height="14" fill="#0b0716"/><rect y="580" width="800" height="22" fill="#0b0716"/>'],
+ ["Aurora",'<defs><filter id="b"><feGaussianBlur stdDeviation="90"/></filter></defs><rect width="800" height="1400" fill="#06121f"/><g filter="url(#b)"><ellipse cx="250" cy="420" rx="300" ry="220" fill="#22c55e" fill-opacity=".7"/><ellipse cx="600" cy="760" rx="280" ry="260" fill="#6366f1" fill-opacity=".65"/><ellipse cx="300" cy="1100" rx="320" ry="240" fill="#06b6d4" fill-opacity=".55"/></g>'],
+ ["Carbon",'<defs><pattern id="p" width="16" height="16" patternUnits="userSpaceOnUse"><rect width="16" height="16" fill="#0d0d0f"/><rect width="8" height="8" fill="#17171b"/><rect x="8" y="8" width="8" height="8" fill="#17171b"/></pattern></defs><rect width="800" height="1400" fill="url(#p)"/>'],
+ ["Iron",'<rect width="800" height="1400" fill="#0c0c0e"/><g fill="#e5e7eb" fill-opacity=".1"><rect x="70" y="480" width="70" height="440" rx="14"/><rect x="150" y="530" width="50" height="340" rx="12"/><rect x="200" y="680" width="400" height="40" rx="10"/><rect x="600" y="530" width="50" height="340" rx="12"/><rect x="660" y="480" width="70" height="440" rx="14"/></g>'],
+ ["Stone",'<defs><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".012 .02" numOctaves="4" seed="7"/><feColorMatrix values="0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .55  0 0 0 .9 0"/></filter></defs><rect width="800" height="1400" fill="#15161a"/><rect width="800" height="1400" filter="url(#n)" opacity=".55"/>']
+];
+function bgURI(i){if(i===0)return skyURI();return"data:image/svg+xml;utf8,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1400" preserveAspectRatio="xMidYMid slice">'+BGP[i][1]+'</svg>')}
+function bgLoad(file){
+  var u=URL.createObjectURL(file),im=new Image();
+  im.onload=function(){var m=Math.max(im.width,im.height),sc=Math.min(1,1280/m),cv=document.createElement("canvas");cv.width=Math.round(im.width*sc);cv.height=Math.round(im.height*sc);cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);URL.revokeObjectURL(u);
+    var d=cv.toDataURL("image/jpeg",.8);S.set.bgimg=d;if(S.set.bgdim==null)S.set.bgdim=35;
+    save();var ok=false;try{ok=localStorage.getItem(KEY)===JSON.stringify(S)}catch(e){}if(!ok&&!window.__noLS){S.set.bgimg="";save();banner("Background","That image is too large to save. Try a smaller one.")}applyTheme();drawSettings()};
+  im.onerror=function(){URL.revokeObjectURL(u);banner("Background","Couldn't read that image.")};im.src=u}
 function onSet(ev){
-  var el=ev.target,k=el.dataset.s;if(el.dataset.p!==undefined){S.set.pat[+el.dataset.p]=+el.value;save();drawCal();return}if(!k)return;
+  var el=ev.target,k=el.dataset.s;if(el.id==="s_bgfile"){if(el.files&&el.files[0])bgLoad(el.files[0]);return}if(el.dataset.p!==undefined){S.set.pat[+el.dataset.p]=+el.value;save();drawCal();return}if(!k)return;
   var v=el.type==="checkbox"?el.checked:(el.type==="range"?+el.value:el.value);
   if(k==="ws")v=+v;
   S.set[k]=v;if(k.indexOf("glass")===0&&k!=="glassOn"&&!S.set.glassOn){S.set.glassOn=true;var gc=$("s_glassOn");if(gc)gc.checked=true}if(k==="unit")S.cu=v;
@@ -776,6 +813,7 @@ function onSet(ev){
   if(k==="ptsEx"||k==="ptsWo"){var pv=$("pv_"+k);if(pv)pv.textContent=S.set[k];drawAwards()}
   if(k==="unit")drawCalc();if(k==="ws"||k==="range")drawCal();if(k==="platesLb"||k==="platesKg"||k==="barsLb"||k==="barsKg"){$("cb").dataset.u="";drawCalc()}
 }
+setInterval(function(){if(S.set.bgimg==="sky:auto")applyTheme()},300000);document.addEventListener("visibilitychange",function(){if(!document.hidden&&S.set.bgimg==="sky:auto")applyTheme()});
 $("sheet").oninput=onSet;
 $("sheet").onchange=onSet;
 var ED=null,WP=null,CF=null;
@@ -1543,7 +1581,16 @@ $("nt_hist").onclick=function(ev){
   if(typeof v==="number"){S.day=v;save();tabs()}
   render();drawCal();try{$("nt_text").focus()}catch(e){}
 };
-var MNAME={histwrap:"History & export",calcwrap:"Weight calculator",basewrap:"Baseline metrics",ruleswrap:"Recomposition rules",awardswrap:"Awards",libwrap:"Exercises",macwrap:"Daily macros",watermenu:"Water intake",drset:"Settings"},MDEF=["histwrap","calcwrap","basewrap","ruleswrap","awardswrap","libwrap","macwrap","watermenu","drset"],
+var IDEA_TO="dinkydoitall@gmail.com";
+function ideaText(){var t=($("idea_t")||{}).value||"Idea",m=(($("idea_m")||{}).value||"").trim(),n=(($("idea_n")||{}).value||"").trim();return{subj:"Dinky Lifter: "+t,body:m+(n?"\n\nFrom: "+n:"")+"\n\n(Sent from the Dinky Lifter app)"}}
+function drawIdea(){var w=$("idea");if(!w||w.dataset.on)return;w.dataset.on=1;
+  w.innerHTML='<div class="hint">Got an idea, a feature request or found a bug? Write it here and tap Send. It opens your email app with the message ready to send to the developer.</div><div class="w"><select id="idea_t" class="cx" aria-label="Type"><option>Idea</option><option>Feature request</option><option>Bug report</option></select></div><textarea id="idea_m" class="cx" rows="5" maxlength="1500" placeholder="Describe your idea or request" aria-label="Your idea or request" style="width:100%;margin-top:8px"></textarea><input id="idea_n" class="cx" placeholder="Your name (optional)" aria-label="Your name" style="margin-top:8px"><div class="w" style="margin-top:8px"><button class="btn" id="idea_send">Send email</button><button class="btn" id="idea_copy">Copy message</button></div><div class="hint" id="idea_st"></div>'}
+$("ideawrap").addEventListener("toggle",function(){if(this.open)drawIdea()});
+$("idea").onclick=function(ev){var b=ev.target.closest("button");if(!b)return;var st=$("idea_st"),x=ideaText();
+  if(!(($("idea_m")||{}).value||"").trim()){st.textContent="Write your idea first.";return}
+  if(b.id==="idea_send"){var u="mailto:"+IDEA_TO+"?subject="+encodeURIComponent(x.subj)+"&body="+encodeURIComponent(x.body),a=document.createElement("a");a.href=u;a.target="_blank";a.rel="noopener";document.body.appendChild(a);a.click();a.remove();st.textContent="Opening your email app. If nothing opens, tap Copy message and email "+IDEA_TO+"."}
+  if(b.id==="idea_copy"){var tx="To: "+IDEA_TO+"\nSubject: "+x.subj+"\n\n"+x.body;try{navigator.clipboard.writeText(tx).then(function(){st.textContent="Copied. Paste it into an email to "+IDEA_TO+"."},function(){st.textContent="Couldn't copy. Email "+IDEA_TO+" with your idea."})}catch(e){st.textContent="Couldn't copy. Email "+IDEA_TO+" with your idea."}}};
+var MNAME={histwrap:"History & export",calcwrap:"Weight calculator",basewrap:"Baseline metrics",ruleswrap:"Recomposition rules",awardswrap:"Awards",libwrap:"Exercises",macwrap:"Daily macros",watermenu:"Water intake",ideawrap:"Submit an idea or request",drset:"Settings"},MDEF=["histwrap","calcwrap","basewrap","ruleswrap","awardswrap","libwrap","macwrap","watermenu","ideawrap","drset"],
 HDEF=["mbub","calwrap","secwk","noteswrap"],HN={mbub:"Macro and water bubbles",calwrap:"Schedule calendar",secwk:"Workout",noteswrap:"Daily notes"},CT="home",CDEL=null,DRG=null;
 function ccList(){return S.cc||[]}
 function ccIndex(id){var r=-1;ccList().forEach(function(c,i){if(c.id===id)r=i});return r}
@@ -1628,36 +1675,6 @@ var tv=S.sched[dk(new Date())];if(typeof tv==="number")S.day=tv;
 if(!S.pl){S.pl={};var pk0=[];rawLive(pk0);pk0.forEach(function(k){S.pl[k]=1});save()}
 applyTheme();applyBurger();fixDay();tabs();render();drawCal();drawWater();drawCalc();awCheck(0);drawMb();drawNotes();applyMenuOrder();drawCC();applyHome();
 if(S.set.welcome!==false)drawWelcome();
-
-/* App build: export fallback when not running inside Claude */
-var IS_CLAUDE=!!(window.claude&&window.claude.use);
-if(!IS_CLAUDE){DL={save:function(o){return new Promise(function(res){
-  var t=String(o.data),done=function(){alert("Backup copied ("+o.filename+").\nPaste it into a note or email to keep it safe.");res()};
-  try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,fb);return}}catch(e){}
-  fb();
-  function fb(){try{var a=document.createElement("textarea");a.value=t;a.setAttribute("readonly","");a.style.position="fixed";a.style.opacity="0";document.body.appendChild(a);a.select();document.execCommand("copy");a.remove();done()}catch(e){alert("Couldn't copy the backup.");res()}}
-})}};try{drawHist()}catch(e){}}
-if(!IS_CLAUDE&&"serviceWorker" in navigator&&location.protocol==="https:"&&!window.Capacitor){try{navigator.serviceWorker.register("sw.js").catch(function(){})}catch(e){}}
-
-/* App build: paste a backup instead of picking a file */
-document.addEventListener("click",function(ev){
-  if(!ev.target.closest||!ev.target.closest("#pasteimp"))return;
-  var ov=document.createElement("div");
-  ov.style.cssText="position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;padding:16px";
-  ov.innerHTML='<div style="width:100%;max-width:520px;background:#151515;border:1px solid #2c2c2c;border-radius:16px;padding:16px;color:#f2f2f2">'+
-    '<b style="font-size:18px">Paste backup</b><p style="color:#a0a0a0;font-size:14px;margin:6px 0 10px">Long-press the box below, tap Paste, then tap Import.</p>'+
-    '<textarea id="pi_t" style="width:100%;height:180px;border:1px solid #444;border-radius:10px;background:#000;color:#f2f2f2;font:13px monospace;padding:8px" placeholder="Paste your backup here"></textarea>'+
-    '<p id="pi_m" style="color:#ef4444;font-size:14px;min-height:1em;margin:6px 0"></p>'+
-    '<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" id="pi_c" type="button">Cancel</button><button class="btn" id="pi_ok" type="button" style="background:#22c55e;color:#04130a;border-color:#22c55e">Import</button></div></div>';
-  document.body.appendChild(ov);
-  ov.querySelector("#pi_c").onclick=function(){ov.remove()};
-  ov.querySelector("#pi_ok").onclick=function(){
-    var t=ov.querySelector("#pi_t").value.trim(),m=ov.querySelector("#pi_m");
-    try{JSON.parse(t)}catch(e){m.textContent="That doesn't look like a complete backup. Make sure you pasted all of it.";return}
-    try{var inp=document.getElementById("imp"),dt=new DataTransfer();dt.items.add(new File([t],"backup.json",{type:"application/json"}));inp.files=dt.files;inp.dispatchEvent(new Event("change",{bubbles:true}));ov.remove();setTimeout(function(){try{drawHist()}catch(e){}},300)}
-    catch(e){m.textContent="Couldn't import that backup."}
-  };
-});
 try{if(window.claude&&claude.use)claude.use("downloads").then(function(d){DL=d;drawHist()}).catch(function(){})}catch(e){}
 </script>
 </body>
