@@ -145,6 +145,7 @@ details input,input.wt,.sr .wt,.cx,#cb,.wb select{background:rgba(0,0,0,.35);bor
 .wpbox .w .cx,.swpanel .w .cx{width:auto}
 .wpbox .w{flex-wrap:wrap}
 .bgg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.bgt{height:74px;border:1px solid rgba(255,255,255,.25);border-radius:10px;background-size:cover;background-position:center;color:#fff;font:700 11px/1 inherit;display:flex;align-items:flex-end;justify-content:center;padding:0 0 6px;cursor:pointer;text-shadow:0 1px 3px #000}
+.wnr{display:grid;grid-template-columns:48px 1fr 1fr;gap:6px;align-items:center;margin:6px 0}.wnr label{color:var(--mute);font-size:12.5px}.wnr input{min-width:0;margin:0}
 .bgup{position:relative;overflow:hidden;display:inline-flex;align-items:center;cursor:pointer}.bgup input{position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0}
 .hint{color:var(--mute);font-size:12px;margin-top:6px}
 .sr2 input[type=text]{width:55%;height:38px;border:1px solid var(--line);border-radius:8px;background:rgba(0,0,0,.3);color:var(--ink);font:16px inherit;padding:0 8px}
@@ -742,6 +743,9 @@ function drawSettings(){
   [["emSet","Set completed",["😊","😀","😎","🙌","👏","🔥","✅","💪"]],["emFail","Set failed",["😢","😞","😭","😬","💀","🙈","❌","🥲"]],["emFlexSide","Exercise complete: arms",["💪","🦾","🔥","⚡","👊","🙌","💥","⭐"]],["emFlexMid","Exercise complete: middle (blank = lifter)",["🏋️","🏆","🥇","😤","🦍","🐺","👑","😎"]],["emConf","Workout complete: custom confetti",["🏆💪🔥","🎉🎊","⭐✨","🏋️💪","🥇🏆","💥🔥","🍕🍔","🦍🐺"]]].forEach(function(r){
     h+='<div class="sr2" style="flex-wrap:wrap"><label for="s_'+r[0]+'">'+r[1]+'</label><input type="text" id="s_'+r[0]+'" data-s="'+r[0]+'" value="'+esc(s[r[0]]||"")+'" style="width:100px;text-align:center;font-size:20px"><div class="pk" style="width:100%;margin:2px 0 0">'+r[2].map(function(e){return'<button class="btn emb" data-em="'+r[0]+'" data-e="'+e+'">'+e+'</button>'}).join("")+'</div></div>'});
   h+='<div class="pk" style="margin:10px 0"><button class="btn" id="sdef">Reset emojis to defaults</button></div>';
+  h+='<p class="sl">Workout names</p><div class="hint">Rename your workouts. Push, Pull and Legs stay as the defaults until you change them.</div>';
+  DAYS.forEach(function(d,i){if(d.h)return;h+='<div class="wnr"><label>Day '+(i+1)+'</label><input class="cx" data-wn="'+i+'" value="'+esc(d.t)+'" maxlength="30" placeholder="Workout name" aria-label="Day '+(i+1)+' name"><input class="cx" data-wm="'+i+'" value="'+esc(d.s||"")+'" maxlength="60" placeholder="Muscle groups" aria-label="Day '+(i+1)+' muscle groups"></div>'});
+  h+='<div class="pk"><button class="btn" id="wnreset">Restore default names</button></div>';
   h+='<p class="sl">Weekly auto-fill pattern</p>';
   WD.forEach(function(d,i){var cur=s.pat[i];h+='<div class="sr2"><label for="s_p'+i+'">'+d+'</label><select id="s_p'+i+'" data-p="'+i+'"><option value="-1"'+(cur===-1?' selected':'')+'>Leave blank</option><option value="-2"'+(cur===-2?' selected':'')+'>Rest day</option>'+DAYS.map(function(x,j){return x.h?"":'<option value="'+j+'"'+(cur===j?' selected':'')+'>Day '+(j+1)+' '+esc(x.t)+'</option>'}).join("")+'</select></div>'});
   h+='<div class="sr2"><label for="s_range">Auto-fill covers</label><select id="s_range" data-s="range">'+[["month","Viewed month (from today)"],["4","Next 4 weeks"],["8","Next 8 weeks"],["12","Next 12 weeks"]].map(function(o){return'<option value="'+o[0]+'"'+((s.range||"month")===o[0]?' selected':'')+'>'+o[1]+'</option>'}).join("")+'</select></div>';
@@ -760,6 +764,7 @@ $("sp").onclick=function(ev){
   var id=ev.target.id;
   if(id==="sp"||id==="sx"){$("sp").classList.remove("open");return}
   if(id==="swel"){drawWelcome();return}
+  if(id==="wnreset"){var bs=JSON.parse(BASE);DAYS.forEach(function(d,i){if(bs[i]){d.t=bs[i].t;d.s=bs[i].s}else if(i>=bs.length&&d.t){}});save();tabs();render();drawCal();drawSettings();return}
   var bgq=ev.target.closest("[data-bgp]");if(bgq){S.set.bgimg=+bgq.dataset.bgp===0?"sky:auto":bgURI(+bgq.dataset.bgp);if(S.set.bgdim==null)S.set.bgdim=35;save();applyTheme();drawSettings();return}
   if(id==="bgclear"){S.set.bgimg="";save();applyTheme();drawSettings();return}
   if(id==="schime"){chime();return}
@@ -803,7 +808,8 @@ function bgLoad(file){
     save();var ok=false;try{ok=localStorage.getItem(KEY)===JSON.stringify(S)}catch(e){}if(!ok&&!window.__noLS){S.set.bgimg="";save();banner("Background","That image is too large to save. Try a smaller one.")}applyTheme();drawSettings()};
   im.onerror=function(){URL.revokeObjectURL(u);banner("Background","Couldn't read that image.")};im.src=u}
 function onSet(ev){
-  var el=ev.target,k=el.dataset.s;if(el.id==="s_bgfile"){if(el.files&&el.files[0])bgLoad(el.files[0]);return}if(el.dataset.p!==undefined){S.set.pat[+el.dataset.p]=+el.value;save();drawCal();return}if(!k)return;
+  var el=ev.target,k=el.dataset.s;if(el.id==="s_bgfile"){if(el.files&&el.files[0])bgLoad(el.files[0]);return}
+  if(el.dataset.wn!==undefined||el.dataset.wm!==undefined){var wi=+(el.dataset.wn!==undefined?el.dataset.wn:el.dataset.wm),wd=DAYS[wi];if(wd){if(el.dataset.wn!==undefined)wd.t=el.value.trim()||"Workout";else wd.s=el.value.trim()}save();tabs();render();drawCal();return}if(el.dataset.p!==undefined){S.set.pat[+el.dataset.p]=+el.value;save();drawCal();return}if(!k)return;
   var v=el.type==="checkbox"?el.checked:(el.type==="range"?+el.value:el.value);
   if(k==="ws")v=+v;
   S.set[k]=v;if(k.indexOf("glass")===0&&k!=="glassOn"&&!S.set.glassOn){S.set.glassOn=true;var gc=$("s_glassOn");if(gc)gc.checked=true}if(k==="unit")S.cu=v;
